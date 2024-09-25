@@ -1,23 +1,20 @@
-# 1. Используем официальный образ Python
-FROM python:3.11-slim
+FROM python:3.9-slim
 
-# 2. Устанавливаем системные зависимости
-RUN apt-get update && apt-get install -y gcc libev-dev libffi-dev build-essential
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libevent-dev \
+    libev-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# 3. Обновляем pip до последней версии
-RUN pip install --upgrade pip
-
-# 4. Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
-# 5. Копируем все файлы проекта из корня репозитория в контейнер
-COPY . /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --no-binary :all: gevent
 
-# 6. Устанавливаем зависимости из requirements.txt
-RUN pip install -r requirements.txt
+COPY . .
 
-# 7. Открываем порт 10000 для доступа к приложению
 EXPOSE 10000
 
-# 8. Указываем команду для запуска вашего приложения
 CMD ["python", "web_server.py"]
