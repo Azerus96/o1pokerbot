@@ -3,18 +3,16 @@ import pickle
 import random
 
 class PokerPlayer:
-    def __init__(self, name, stack, use_mccfr=True, iterations=1000):
+    def __init__(self, name, stack, strategy=None):
         self.name = name
         self.stack = stack
         self.initial_stack = stack
         self.history = []
         self.dossier = {}
-        self.use_mccfr = use_mccfr
-
-        self.strategy_system = MCCFR(iterations) if use_mccfr else BasicPokerStrategy()
+        self.strategy = strategy if strategy else BasicPokerStrategy()
 
     def make_decision(self, game_state):
-        decision = self.strategy_system.decide(game_state)
+        decision = self.strategy.decide(game_state)
         self.store_decision(game_state, decision)
         return decision
 
@@ -30,8 +28,8 @@ class PokerPlayer:
         self.dossier[opponent_name][action] += 1
 
     def adjust_strategy(self):
-        if self.use_mccfr:
-            self.strategy_system.run_iterations(self.history)
+        if isinstance(self.strategy, MCCFR):
+            self.strategy.run_iterations(self.history)
 
     def save_state(self, file_name=None):
         if file_name is None:
@@ -40,7 +38,7 @@ class PokerPlayer:
             pickle.dump({
                 "history": self.history,
                 "dossier": self.dossier,
-                "strategy": self.strategy_system.strategy
+                "strategy": self.strategy.strategy if isinstance(self.strategy, MCCFR) else None
             }, file)
 
     def load_state(self, file_name):
@@ -48,7 +46,8 @@ class PokerPlayer:
             state = pickle.load(file)
             self.history = state["history"]
             self.dossier = state["dossier"]
-            self.strategy_system.strategy = state["strategy"]
+            if isinstance(self.strategy, MCCFR) and state["strategy"]:
+                self.strategy.strategy = state["strategy"]
 
 class BasicPokerStrategy:
     def decide(self, game_state):
