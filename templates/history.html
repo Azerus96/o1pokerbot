@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История Игр</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>История Турниров</h1>
+    <table>
+        <tr>
+            <th>Победитель</th>
+            <th>Стек</th>
+            <th>Игроки</th>
+        </tr>
+        {% for game in games %}
+        <tr>
+            <td>{{ game.winner }}</td>
+            <td>{{ game.stack }}</td>
+            <td>{{ game.players | tojson }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">На главную</a>
+</body>
+</html>
