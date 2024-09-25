@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка турнира</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Настроить турнир</h1>
+    <form action="/start_tournament" method="post">
+        <label for="max_players">Максимальное количество игроков:</label>
+        <input type="number" id="max_players" name="max_players" value="160" min="2" max="500" required>
+
+        <label for="bot_players">Количество ботов:</label>
+        <input type="number" id="bot_players" name="bot_players" value="10" min="0" max="160" required>
+
+        <label for="initial_stack">Начальный размер стека:</label>
+        <input type="number" id="initial_stack" name="initial_stack" value="10000" min="1000" required>
+
+        <label for="round_duration">Длительность раунда (минуты):</label>
+        <input type="number" id="round_duration" name="round_duration" value="6" min="1" required>
+
+        <label for="payout_structure">Структура выплат:</label>
+        <select id="payout_structure" name="payout_structure" required>
+            <option value="standard">Стандартная</option>
+            <option value="top-heavy">Топ-тяжелая</option>
+            <!-- Добавьте другие структуры по мере необходимости -->
+        </select>
+
+        <label for="allow_late_registration">Разрешить позднюю регистрацию:</label>
+        <input type="checkbox" id="allow_late_registration" name="allow_late_registration" checked>
+
+        <label for="late_registration_rounds">Количество раундов поздней регистрации:</label>
+        <input type="number" id="late_registration_rounds" name="late_registration_rounds" value="2" min="0">
+
+        <button type="submit">Запустить турнир</button>
+    </form>
+</body>
+</html>
